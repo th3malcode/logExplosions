@@ -1,0 +1,26 @@
+const typeIds = [
+	        "minecraft:lava_bucket",
+	        "minecraft:flint_and_steel",
+	        "minecraft:fire_charge",
+	        "minecraft:end_crystal",
+	        "minecraft:wither_skeleton_skull",
+	        "minecraft:anvil",
+	        "minecraft:obsidian",
+	        "minecraft:bed",
+	        "minecraft:water_bucket",
+	        "minecraft:cobblestone",
+	        "minecraft:sand",
+	        "minecraft:gravel",
+	        "minecraft:redstone",
+	        "minecraft:piston",
+	        "minecraft:tnt_minecart",
+	        "minecraft:tnt",
+	        "minecraft:respawn_anchor",
+	        "minecraft:chest_minecart",
+	        "minecraft:chest_boat",
+	        "minecraft:trapped_chest",
+	        "minecraft:chest",
+	        "minecraft:hopper",
+	        "minecraft:hopper_minecart"
+];
+export { typeIds };
