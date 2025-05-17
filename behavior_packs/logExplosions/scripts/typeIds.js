@@ -21,6 +21,7 @@ const typeIds = [
 	        "minecraft:trapped_chest",
 	        "minecraft:chest",
 	        "minecraft:hopper",
-	        "minecraft:hopper_minecart"
+	        "minecraft:hopper_minecart",
+		"minecraft:bucket"
 ];
 export { typeIds };

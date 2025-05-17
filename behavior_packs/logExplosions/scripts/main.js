@@ -3,67 +3,71 @@
 import { world } from '@minecraft/server';
 import { typeIds } from './typeIds.js';
 
-function logEvent(eve, nam, dim, loc) {
+function logEvent(eve, typ,  nam, dim, loc) {
+	const { x, y, z } = loc;
+	const cor = `${Math.floor(x)}, ${Math.floor(y)}, ${Math.floor(z)}`;
+	console.log(`${eve}, ${typ}, ${nam}, ${dim}, ${cor}`);
 }
 
 
-// Function to log player locations
-function logPlayerLocations() {
-	const players = world.getPlayers();
-	players.forEach(player => {
-		const { x, y, z } = player.location;
-		const coordinates = `${Math.floor(x)}, ${Math.floor(y)}, ${Math.floor(z)}`;
-		console.log(`${player.name} ${player.dimension.id} at ${coordinates}`);
-	});
+// Function to calculate the distance between two locations
+function calculateDistance(loc1, loc2) {
+    const dx = loc1.x - loc2.x;
+    const dy = loc1.y - loc2.y;
+    const dz = loc1.z - loc2.z;
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
 }
 
 world.afterEvents.explosion.subscribe((event) => {
+	const players = world.getPlayers();
 	const impactedBlocks = event.getImpactedBlocks();
-	const { x, y, z } = impactedBlocks[0];
-	const coordinates = `${Math.floor(x)}, ${Math.floor(y)}, ${Math.floor(z)}`;
+	//const { x, y, z } = impactedBlocks[0];
+	//const coordinates = `${Math.floor(x)}, ${Math.floor(y)}, ${Math.floor(z)}`;
 	let src;
 	if (event.source) {
 		src = `${event.source.typeId}`;
 	} else {
 		src = `Unknown`;
 	}
-	//console.log(`Explosion Dim: ${event.dimension.id} ${src} Impacted blocks: ${JSON.stringify(impactedBlocks)}`);
-	console.log(`Explosion ${event.dimension.id} ${src} at ${coordinates}`);
-	logPlayerLocations();
+	console.log(`Explosion Dim: ${event.dimension.id} ${src} Impacted blocks: ${JSON.stringify(impactedBlocks)}`);
+	//console.log(`Explosion ${event.dimension.id} ${src} at ${coordinates}`);
+	logEvent(`explosion`, src, `none`, event.dimension.id, impactedBlocks[0]);
+	players.forEach(player => {
+		const distance = calculateDistance(player.location, impactedBlocks[0]);
+		logEvent(`explosion`, distance, player.name, player.dimension.id, player.location);
+	});
 });
 
 world.beforeEvents.playerLeave.subscribe(({ player }) => {
-	const { x, y, z } = player.location;
-	const coordinates = `${Math.floor(x)}, ${Math.floor(y)}, ${Math.floor(z)}`;
-	console.log(`Leave ${player.name} ${player.dimension.id} at ${coordinates}`);
+	logEvent(`playerLeave`, `none`, player.name, player.dimension.id, player.location)
 });
-
-
 
 // Subscribe to the `itemUse` event, which is triggered when a player uses an item
 world.afterEvents.itemUse.subscribe(({ source, itemStack }) => {
 	if (typeIds.includes(itemStack.typeId)) {
-		const { x, y, z } = source.location;
-		const coordinates = `${Math.floor(x)}, ${Math.floor(y)}, ${Math.floor(z)}`;
-		console.log(`item ${source.name} ${source.dimension.id} ${itemStack.typeId} at ${coordinates}`);
+		logEvent(`itemUse`, itemStack.typeId, source.name, source.dimension.id, source.location)
 	}
-	logEvent(0,0,0,0);
+//		logEvent(`itemUse`, itemStack.typeId, source.name, source.dimension.id, source.location)
 });
 
 world.afterEvents.playerInteractWithBlock.subscribe(({ player, block }) => {
 	if (typeIds.includes(block.typeId)) {
-		const { x, y, z } = block.location;
-		const coordinates = `${Math.floor(x)}, ${Math.floor(y)}, ${Math.floor(z)}`;
-		console.log(`block ${player.name} ${player.dimension.id} ${block.typeId} at ${coordinates}`);
+		logEvent(`playerInteractWithBlock`, block.typeId, player.name, player.dimension.id, block.location)
 	}	
+//		logEvent(`playerInteractWithBlock`, block.typeId, player.name, player.dimension.id, block.location)
 });
 
+world.afterEvents.playerPlaceBlock.subscribe(({ player, block }) => {
+	if (typeIds.includes(block.typeId)) {
+		logEvent(`playerPlaceBlock`, block.typeId, player.name, player.dimension.id, block.location)
+	}	
+//		logEvent(`playerPlaceBlock`, block.typeId, player.name, player.dimension.id, block.location)
+});
 
 world.afterEvents.playerInteractWithEntity.subscribe(({ player, target }) => {
 	if (typeIds.includes(target.typeId)) {
-		const { x, y, z } = target.location;
-		const coordinates = `${Math.floor(x)}, ${Math.floor(y)}, ${Math.floor(z)}`;
-		console.log(`entity ${player.name} ${player.dimension.id} ${target.typeId} at ${coordinates}`);
+		logEvent(`playerInteractWithEntity`, target.typeId, player.name, player.dimension.id, target.location)
 	}	
+//		logEvent(`playerInteractWithEntity`, target.typeId, player.name, player.dimension.id, target.location)
 });
 
