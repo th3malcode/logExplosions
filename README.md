@@ -3,9 +3,9 @@
 This is a behavour pack for minecraft bedrock.
 Testing done on an ubuntu installed version of minecraft bedrock.
 
-Console will show this if configured correctly.
+Console will show this at startup if configured correctly.
 ```
-[2025-05-07 17:00:23] [2025-05-07 17:00:23:892 INFO] [SERVER] Pack Stack - [01][logExplosions] [packid_ver][6f3a4325-4ce5-42f5-b141-12641c8823c3_1.0.0] [path][development_behavior_packs/logExplosions]
+[2025-05-17 15:09:34] [2025-05-17 15:09:34:327 INFO] [SERVER] Pack Stack - [00][logExplosions] [packid_ver][6f3a4325-4ce5-42f5-b141-12641c8823c3_1.0.0] [path][worlds/Bedrock level/behavior_packs/logExplosions]
 ```
 
 Events that are being monitored are listed in typeId.js file.
@@ -42,11 +42,21 @@ oak.2025.05.03.18.10.34.log:[2025-05-03 18:29:36] [2025-05-03 18:29:36:611 INFO]
 You can then search through the log after an event has happened.  
 
 
-## bs_root
-All the files in bs_root need to be placed into the folder with your bedrock_server executable (and server.properties).
+## To Install
+Shell to your server.  With git installed.
+```
+cd <to your world folder.  with level.dat and db folder in it>
+git init
+git remote add origin https://github.com/th3malcode/logExplosions
+git fetch origin
+git checkout -b main --track origin/main
+git reset --hard origin/main
+```
 
-
-## bs_root_modify
-Same as above but merge this files instead of replacing them. Just incase you have other addons or other module permissions.
-
-
+## To Update
+If I have made changes you can get the latest update.
+Shell to your server.  With git installed.
+```
+cd <to your world folder.  with level.dat and db folder in it>
+git pull origin
+```
