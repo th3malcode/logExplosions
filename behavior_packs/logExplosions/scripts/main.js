@@ -15,22 +15,18 @@ function calculateDistance(loc1, loc2) {
     const dx = loc1.x - loc2.x;
     const dy = loc1.y - loc2.y;
     const dz = loc1.z - loc2.z;
-    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    return Math.floor(Math.sqrt(dx * dx + dy * dy + dz * dz));
 }
 
 world.afterEvents.explosion.subscribe((event) => {
 	const players = world.getPlayers();
 	const impactedBlocks = event.getImpactedBlocks();
-	//const { x, y, z } = impactedBlocks[0];
-	//const coordinates = `${Math.floor(x)}, ${Math.floor(y)}, ${Math.floor(z)}`;
 	let src;
 	if (event.source) {
 		src = `${event.source.typeId}`;
 	} else {
 		src = `Unknown`;
 	}
-	console.log(`Explosion Dim: ${event.dimension.id} ${src} Impacted blocks: ${JSON.stringify(impactedBlocks)}`);
-	//console.log(`Explosion ${event.dimension.id} ${src} at ${coordinates}`);
 	logEvent(`explosion`, src, `none`, event.dimension.id, impactedBlocks[0]);
 	players.forEach(player => {
 		const distance = calculateDistance(player.location, impactedBlocks[0]);
@@ -47,7 +43,7 @@ world.afterEvents.itemUse.subscribe(({ source, itemStack }) => {
 	if (typeIds.includes(itemStack.typeId)) {
 		logEvent(`itemUse`, itemStack.typeId, source.name, source.dimension.id, source.location)
 	}
-//		logEvent(`itemUse`, itemStack.typeId, source.name, source.dimension.id, source.location)
+//logEvent(`itemUse`, itemStack.typeId, source.name, source.dimension.id, source.location)
 });
 
 world.afterEvents.playerInteractWithBlock.subscribe(({ player, block }) => {
