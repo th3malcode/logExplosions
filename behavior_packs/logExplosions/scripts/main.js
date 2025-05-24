@@ -27,22 +27,43 @@ world.afterEvents.explosion.subscribe((event) => {
 	} else {
 		src = `Unknown`;
 	}
-	let loc;
 	if (impactedBlocks.length > 0 ) {
-		loc = impactedBlocks[0];
-	} else if ( event.location ) {
-		loc = event.location;
-	} else if ( event.source.location ) {
-		loc = event.source.location;
+		logEvent(`explosion`, src, `none`, event.dimension.id, impactedBlocks[0]);
+		players.forEach(player => {
+			const distance = calculateDistance(player.location, impactedBlocks[0]);
+			logEvent(`explosion`, `dist ${distance}`, player.name, player.dimension.id, player.location);
+		});
 	} else {
-		loc = { x: 0, y: 0, z: 0 };
-	}
-	logEvent(`explosion`, src, `none`, event.dimension.id, loc);
-	players.forEach(player => {
-		const distance = calculateDistance(player.location, loc);
-		logEvent(`explosion`, distance, player.name, player.dimension.id, player.location);
-	});
+		console.log(`explosion, src, none, event.dimension.id, 'Unknown'`);
+		players.forEach(player => {
+			logEvent(`explosion`, src, player.name, player.dimension.id, player.location);
+		});
+	};
 });
+
+
+const damageSrcIds = [
+	"entityExplosion",
+	"blockExplosion",
+];
+
+
+world.afterEvents.entityHurt.subscribe(({ damageSource, hurtEntity }) => {
+	const players = world.getPlayers();
+	if (damageSrcIds.includes(damageSource.cause)) {
+		//console.log(`Explosion damage detected at: ${JSON.stringify(damageSource.cause)}`);
+		//console.log(`Explosion damage detected at: ${JSON.stringify(hurtEntity.location)}`);
+		logEvent(`entityHurt`, damageSource.cause, `hurt-${hurtEntity.typeId}`, hurtEntity.dimension.id, hurtEntity.location);
+		const loc = hurtEntity.location;
+		players.forEach(player => {
+			const distance = calculateDistance(player.location, loc);
+			logEvent(`entityHurt`, `dist ${distance}`, player.name, player.dimension.id, loc);
+		});
+	};
+});
+
+
+
 
 /*system.runInterval(() => {
 for (const player of world.getAllPlayers()) {
