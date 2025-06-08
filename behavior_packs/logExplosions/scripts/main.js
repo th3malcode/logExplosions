@@ -75,10 +75,11 @@ world.afterEvents.entityDie.subscribe((event) => {
 
 	if (entityIds.includes(event.deadEntity.typeId)) {
 		const cause = event.damageSource?.cause ?? "unknown";
-		if ( event.deadEntity.name = undefined ) {
-			const namish = event.deadEntity.typeId;
+		let namish;
+		if ( event.deadEntity.name = "undefined" ) {
+			namish = event.deadEntity.typeId;
 		} else { 
-			const namish = event.deadEntity.name;
+			namish = event.deadEntity.name;
 		};
 		const loc = event.deadEntity.location;
 		logEvent(`entityDie`, cause, namish, event.deadEntity.dimension.id, loc);
