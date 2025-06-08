@@ -1,0 +1,17 @@
+{
+    "format_version": 2,
+    "header": {
+        "description": "Coords",
+        "name": "Coords",
+        "uuid": "4a14dba1-b676-4161-aff5-38e8f399fce1",
+        "version": [1, 0, 0],
+        "min_engine_version": [1, 21, 50]
+    },
+    "modules": [
+        {
+            "type": "resources",
+            "uuid": "d180aa9e-5e5d-4e5a-8cbe-831742b1125a",
+            "version": [1, 0, 0]
+        }
+    ]
+}

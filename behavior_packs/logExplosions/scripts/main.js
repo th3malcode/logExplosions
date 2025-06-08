@@ -44,24 +44,56 @@ world.afterEvents.explosion.subscribe((event) => {
 
 const damageSrcIds = [
 	"entityExplosion",
-	"blockExplosion",
+	"blockExplosion"
 ];
 
 
 world.afterEvents.entityHurt.subscribe(({ damageSource, hurtEntity }) => {
-	const players = world.getPlayers();
 	if (damageSrcIds.includes(damageSource.cause)) {
 		//console.log(`Explosion damage detected at: ${JSON.stringify(damageSource.cause)}`);
 		//console.log(`Explosion damage detected at: ${JSON.stringify(hurtEntity.location)}`);
 		logEvent(`entityHurt`, damageSource.cause, `hurt-${hurtEntity.typeId}`, hurtEntity.dimension.id, hurtEntity.location);
 		const loc = hurtEntity.location;
+		const players = world.getPlayers();
 		players.forEach(player => {
 			const distance = calculateDistance(player.location, loc);
-			logEvent(`entityHurt`, `dist ${distance}`, player.name, player.dimension.id, loc);
+			logEvent(`entityHurt`, `dist ${distance}`, player.name, player.dimension.id, player.location);
 		});
 	};
 });
 
+const entityIds = [
+	"minecraft:player",
+	"minecraft:cat",
+	"minecraft:dog"
+];
+
+
+world.afterEvents.entityDie.subscribe((event) => {
+	//Player
+	//Cat or Dog
+
+	if (entityIds.includes(event.deadEntity.typeId)) {
+		const cause = event.damageSource?.cause ?? "unknown";
+		if ( event.deadEntity.name = undefined ) {
+			const namish = event.deadEntity.typeId;
+		} else { 
+			const namish = event.deadEntity.name;
+		};
+		const loc = event.deadEntity.location;
+		logEvent(`entityDie`, cause, namish, event.deadEntity.dimension.id, loc);
+		if ( event.damageSource.damagingEntity ) {
+			logEvent(`entityDie`, "Killer", event.damageSource.damagingEntity.name, event.damageSource.damagingEntity.dimension.id, event.damageSource.damagingEntity.location);
+		} else {
+			const players = world.getPlayers();
+			players.forEach(player => {
+				const distance = calculateDistance(player.location, loc);
+				logEvent(`entityDie`, `dist ${distance}`, player.name, player.dimension.id, player.location);
+			});
+
+		}
+	}
+});
 
 
 
@@ -115,9 +147,3 @@ world.afterEvents.playerInteractWithEntity.subscribe(({ player, target }) => {
 	//		logEvent(`playerInteractWithEntity`, target.typeId, player.name, player.dimension.id, target.location)
 });
 
-world.afterEvents.entityDie.subscribe((event) => {
-    world.sendMessage(
-        `${event.deadEntity.typeId} died from ${event.damageSource}!`,
-    );
-	logEvent(`entityDie`, event.damageSource.EntityDamageCause, event.deadEntity.name, event.deadEntity.dimension.id, event.deadEntity.location)
-});
