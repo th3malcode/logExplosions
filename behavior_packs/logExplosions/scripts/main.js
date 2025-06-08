@@ -72,6 +72,7 @@ for (const player of world.getAllPlayers()) {
 }
 }, 100);
 */
+/*
 system.runInterval(() => {
 	for (const player of world.getAllPlayers()) {
 		const { x, y, z } = player.location;
@@ -79,7 +80,7 @@ system.runInterval(() => {
 		player.onScreenDisplay.setActionBar(cor);
 	}
 }, 20);
-
+*/
 
 world.beforeEvents.playerLeave.subscribe(({ player }) => {
 	logEvent(`playerLeave`, `none`, player.name, player.dimension.id, player.location)
@@ -114,3 +115,9 @@ world.afterEvents.playerInteractWithEntity.subscribe(({ player, target }) => {
 	//		logEvent(`playerInteractWithEntity`, target.typeId, player.name, player.dimension.id, target.location)
 });
 
+world.afterEvents.entityDie.subscribe((event) => {
+    world.sendMessage(
+        `${event.deadEntity.typeId} died from ${event.damageSource}!`,
+    );
+	logEvent(`entityDie`, event.damageSource.EntityDamageCause, event.deadEntity.name, event.deadEntity.dimension.id, event.deadEntity.location)
+});
